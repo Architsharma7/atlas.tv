@@ -4,7 +4,7 @@ import superTokenList from "@superfluid-finance/tokenlist";
 import { wagmiConfig } from "./wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-export function atlasSubscriptionComponent() {
+export function AtlasSubscriptionComponent() {
   return (
     <div>
       <WagmiConfig config={wagmiConfig}>
@@ -16,7 +16,7 @@ export function atlasSubscriptionComponent() {
             };
             return (
               <SuperfluidWidget
-                {...data}
+                // {...data}
                 tokenList={superTokenList}
                 type="dialog"
                 walletManager={walletManager}

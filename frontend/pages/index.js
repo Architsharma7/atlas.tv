@@ -2,7 +2,10 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "../styles/Home.module.css";
-import { AtlasSubscriptionComponent } from "../components/SuperfluidSub";
+import {
+  AtlasSubscriptionComponent,
+  AtlasCreatorSubscriptionComponent,
+} from "../components/SuperfluidSub";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +25,11 @@ export default function Home() {
             <code className={styles.code}>pages/index.js</code>
           </p>
           <AtlasSubscriptionComponent></AtlasSubscriptionComponent>
+          <AtlasCreatorSubscriptionComponent
+            flowRate={"2"}
+            creatorAddress={"0x7BDa037dFdf9CD9Ad261D27f489924aebbcE71Ac"}
+            creatorName={"John harris"}
+          ></AtlasCreatorSubscriptionComponent>
           <div>
             <a
               href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"

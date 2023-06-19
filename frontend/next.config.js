@@ -5,6 +5,7 @@ const nextConfig = {
     config.resolve.fallback = { fs: false, net: false, tls: false };
     return config;
   },
+  transpilePackages: ["@superfluid-finance/widget"],
 };
 
 module.exports = nextConfig;

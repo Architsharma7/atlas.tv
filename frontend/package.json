@@ -10,10 +10,15 @@
   },
   "dependencies": {
     "@next/font": "13.4.6",
+    "@rainbow-me/rainbowkit": "^1.0.2",
+    "@superfluid-finance/tokenlist": "^1.1.0",
+    "@superfluid-finance/widget": "^0.0.5",
     "eslint": "8.43.0",
     "eslint-config-next": "13.4.6",
     "next": "13.4.6",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "viem": "^1.0.7",
+    "wagmi": "^1.2.0"
   }
 }

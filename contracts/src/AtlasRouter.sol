@@ -18,6 +18,31 @@ contract AtlasRouter {
                            Superfluid
     //////////////////////////////////////////////////////////////*/
 
+    function getStreamInfo(
+        address superTokenAddress,
+        address user
+    )
+        public
+        returns (
+            uint256 timestamp,
+            int96 flowRate,
+            uint256 deposit,
+            uint256 owedDeposit
+        )
+    {
+        (timestamp, flowRate, deposit, owedDeposit) = ISuperToken(
+            superTokenAddress
+        ).getFlowInfo(user, address(this));
+    }
+
+    function getNetStreamInfo(
+        address superTokenAddress
+    ) public returns (int96 flowRate) {
+        (flowRate) = ISuperToken(superTokenAddress).getNetFlowRate(
+            address(this)
+        );
+    }
+
     function wrapSuperTokenUser(
         address token,
         address superTokenAddress,

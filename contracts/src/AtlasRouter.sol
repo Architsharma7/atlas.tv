@@ -22,6 +22,40 @@ contract AtlasRouter is SuperAppBaseCFA {
         ISuperfluid _host
     ) SuperAppBaseCFA(_host, true, true, true) {}
 
+    ///////////  CALLBACK LOGIC  /////////////
+
+    function onFlowCreated(
+        ISuperToken superToken,
+        address sender,
+        bytes calldata ctx
+    ) internal override returns (bytes memory newCtx) {
+        newCtx = ctx;
+
+        // get inflow rate from sender
+        int96 inflowRate = superToken.getFlowRate(sender, address(this));
+    }
+
+    function onFlowUpdated(
+        ISuperToken superToken,
+        address sender,
+        int96 previousFlowRate,
+        uint256 /*lastUpdated*/,
+        bytes calldata ctx
+    ) internal override returns (bytes memory newCtx) {
+        newCtx = ctx;
+    }
+
+    function onFlowDeleted(
+        ISuperToken superToken,
+        address /*sender*/,
+        address receiver,
+        int96 previousFlowRate,
+        uint256 /*lastUpdated*/,
+        bytes calldata ctx
+    ) internal override returns (bytes memory newCtx) {
+        newCtx = ctx;
+    }
+
     /*///////////////////////////////////////////////////////////////
                            Superfluid
     //////////////////////////////////////////////////////////////*/

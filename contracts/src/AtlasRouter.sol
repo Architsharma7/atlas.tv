@@ -6,13 +6,21 @@ import {SuperTokenV1Library} from "@superfluid-finance/ethereum-contracts/contra
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ISuperfluid, ISuperToken, ISuperApp} from "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperfluid.sol";
 import {ISETH} from "@superfluid-finance/ethereum-contracts/contracts/interfaces/tokens/ISETH.sol";
+import {IInstantDistributionAgreementV1} from "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/IInstantDistributionAgreementV1.sol";
+import {SuperAppBaseCFA} from "@superfluid-finance/ethereum-contracts/contracts/apps/SuperAppBaseCFA.sol";
 
 // Tasks
 // - Add all the creators
 // - Allow accepting streams and control streams
 // - Distribute these streams to the creator , according to the stats
-contract AtlasRouter {
+contract AtlasRouter is SuperAppBaseCFA {
     using SuperTokenV1Library for ISuperToken;
+    ISuperToken public acceptedSuperToken;
+
+    constructor(
+        ISuperToken _acceptedSuperToken,
+        ISuperfluid _host
+    ) SuperAppBaseCFA(_host, true, true, true) {}
 
     /*///////////////////////////////////////////////////////////////
                            Superfluid

@@ -13,6 +13,7 @@
     "@lens-protocol/react-web": "^1.1.1",
     "@livepeer/react": "^2.5.8",
     "@next/font": "13.4.6",
+    "@polybase/client": "^0.6.2",
     "@rainbow-me/rainbowkit": "^1.0.2",
     "@superfluid-finance/tokenlist": "^1.1.0",
     "@superfluid-finance/widget": "^0.0.5",
@@ -29,6 +30,7 @@
     "urql": "^4.0.4",
     "uuid": "^9.0.0",
     "viem": "^1.0.7",
-    "wagmi": "^1.2.0"
+    "wagmi": "^1.2.0",
+    "web3.storage": "^4.5.4"
   }
 }

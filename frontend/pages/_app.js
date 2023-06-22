@@ -10,6 +10,7 @@ import {
   createReactClient,
   studioProvider,
 } from "@livepeer/react";
+import { LensProvider } from '@lens-protocol/react-web';
 // import { LensProvider } from "@lens-protocol/react-web";
 // import { LensConfig, development } from '@lens-protocol/react-web';
 // import { bindings as wagmiBindings } from '@lens-protocol/wagmi';

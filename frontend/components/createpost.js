@@ -21,7 +21,8 @@ const client = create({
 });
 
 export default function CreatePostModal() {
-  /// get the uri using livepeer
+  /// get the videourl using livepeer
+  const videoUrl = ""
   const inputRef = useRef(null);
   async function uploadToIPFS() {
     const metaData = {
@@ -29,11 +30,12 @@ export default function CreatePostModal() {
       content: "hello",
       description: "bye",
       name: `Post by me`,
-      external_url: `https://lenster.xyz/u/hello`,
+      external_url: ``,
       metadata_id: uuid(),
       mainContentFocus: "VIDEO",
       attributes: [],
       locale: "en-US",
+      media : videoUrl
     };
 
     const added = await client.add(JSON.stringify(metaData));

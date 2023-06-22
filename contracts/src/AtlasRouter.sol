@@ -13,6 +13,8 @@ import {SuperAppBaseCFA} from "@superfluid-finance/ethereum-contracts/contracts/
 // - Add all the creators
 // - Allow accepting streams and control streams
 // - Distribute these streams to the creator , according to the stats
+// - A Stream will be started whenever a new flow is created , we will just update the Flow to the users
+// - Can be based on the number of Views and Watch hours for the creator
 contract AtlasRouter is SuperAppBaseCFA {
     using SuperTokenV1Library for ISuperToken;
     ISuperToken public acceptedSuperToken;

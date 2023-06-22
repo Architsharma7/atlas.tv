@@ -22,7 +22,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "pages/stream.js", "pages/index.js"  ],
+, "pages/stream.js", "pages/index.js", "pages/_app.js"  ],
   "exclude": [
     "node_modules"
   ]

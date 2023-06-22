@@ -1,19 +1,18 @@
 import { ethers } from "ethers";
 import { getSigner } from "../utils";
-import { create } from "ipfs-http-client";
-import { v4 as uuid } from "uuid";
 import { splitSignature } from "../utils";
 import { refreshAuthToken } from "../pages/api";
+import { LENS_HUB_CONTRACT_ADDRESS, LENS_ABI } from "../constants/lenshub";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 
 export default function CreatePostModal() {
-    /// get the uri using livepeer
+  /// get the uri using livepeer
   return uri;
 }
 
 async function savePost() {
-  const contentURI = await uploadToIPFS();
+  const contentURI = await CreatePostModal();
   const { accessToken } = await refreshAuthToken();
   const createPostRequest = {
     profileId: profile.id,
@@ -36,7 +35,7 @@ async function savePost() {
 
     const contract = new ethers.Contract(
       LENS_HUB_CONTRACT_ADDRESS,
-      LENSHUB,
+      LENS_ABI,
       getSigner()
     );
 
@@ -64,8 +63,6 @@ async function savePost() {
 
   return (
     <div>
-      hello
-      <p>hello</p>
     </div>
   );
 }

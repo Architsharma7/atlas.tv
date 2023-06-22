@@ -1,11 +1,12 @@
-import { createClient as createUrqlClient } from "urql";
+import { Client, cacheExchange, fetchExchange } from "urql";
 import { createPostTypedData, refresh } from "./mutations";
 
-APIURL = "https://api-mumbai.lens.dev";
+export const APIURL = "https://api-mumbai.lens.dev/";
 export const STORAGE_KEY = "LH_STORAGE_KEY";
 
-export const basicClient = new createUrqlClient({
+export const basicClient = new Client({
   url: APIURL,
+  exchanges: [cacheExchange, fetchExchange],
 });
 
 export async function refreshAuthToken() {

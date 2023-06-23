@@ -15,7 +15,7 @@ export const CreateAndViewAsset = () => {
   } = useCreateAsset(
     video
       ? {
-          sources: [{ name: video.name, file: video }] as const,
+          sources: [{ name: video.name, file: video, creatorId: "" }] as const,
           /// to upload directly to ipfs do this /////
           // sources: [
           //   {

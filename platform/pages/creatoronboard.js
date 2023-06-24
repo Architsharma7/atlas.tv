@@ -29,7 +29,7 @@ const db = new Polybase({
     "pk/0xdd6503afa34792ca49abce644c46527bc2f664299797958e7780d21b4713a9698d35124fa269561f078f89c4aea969a862a20021f3f4042e1d5e5803817e28d3/atlas.tv",
 });
 
-const Onboard = () => {
+const CreatorOnboard = () => {
   //   const { data, error, loading } = useActiveProfile();
   const lensId = data.id
   const userName = data.handle
@@ -57,7 +57,7 @@ const Onboard = () => {
     await db
       .collection("CreatorProfile")
       .record(lensId)
-      .call("setAbout", [userProfile.channelDescription, userProfile.channelName, profileImageUrl, userProfile.emailId, userName]);
+      .call("setCreatorAbout", [userProfile.channelDescription, userProfile.channelName, profileImageUrl, userProfile.emailId, userName]);
       // console.log(userProfile)
     // console.log(data.handle)
     // console.log(data.id)
@@ -102,4 +102,4 @@ const Onboard = () => {
   );
 };
 
-export default Onboard;
+export default CreatorOnboard;

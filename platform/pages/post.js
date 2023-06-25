@@ -1,6 +1,6 @@
 import React from 'react'
 import {CreateAndViewAsset} from "../components/videoupload"
-import CreatePostModal from '../components/createpost'
+import CreatePostModal from '../components/post'
 
 const Post = () => {
   return (

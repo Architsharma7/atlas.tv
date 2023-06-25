@@ -1,13 +1,8 @@
-# Sample Hardhat Project
+## STREAM SPLIT FLOW
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-```
+- Superfluid Streams will be started during the subscriptions to Atlas Router
+- Every 24Hour , we refresh the Subscription data , checking the total views & watch hours on the platform , along with metrics for each and every creator
+- The Stats will be stored in polybase repo to maintain the final stats to be setup in the Contract
+- Gelato Functions is used to call this off chain database for getting the data
+- Depending on that , a new stream will be started out of the Atlas Router to the creator , allowing them to earn in realtime
+- The Stream will be distributed to all on the basis of the the viewership , using IDA in the backend

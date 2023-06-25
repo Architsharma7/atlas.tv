@@ -2,6 +2,7 @@ import { React, useState } from "react";
 import { Polybase } from "@polybase/client";
 import * as eth from "@polybase/eth";
 import { useActiveProfile } from "@lens-protocol/react-web";
+// import { useProfilesOwnedBy } from "@lens-protocol/react-web";
 
 const db = new Polybase({
   defaultNamespace:
@@ -9,9 +10,7 @@ const db = new Polybase({
 });
 
 const UserOnboard = () => {
-  const { data, error, loading } = useActiveProfile();
-  const lensId = data.id;
-  const lensUserName = data.handle;
+  const { data,loading } = useActiveProfile();
 
   const [userProfile, setUserProfile] = useState({
     userName: "",
@@ -28,18 +27,18 @@ const UserOnboard = () => {
       return { h: "eth-personal-sign", sig };
     });
 
-    await db.collection("UserProfile").create([lensId, lensUserName]);
+    await db.collection("UserProfile").create([data.id, data.handle]);
 
-    await db
-      .collection("UserProfile")
-      .record(lensId)
-      .call("setUserAbout", [
-        userProfile.userName,
-        userProfile.emailId,
-      ]);
-    console.log(userProfile);
-    console.log(data.handle);
-    console.log(data.id);
+      await db
+        .collection("UserProfile")
+        .record(data.id)
+        .call("setUserAbout", [
+          userProfile.userName,
+          userProfile.emailId,
+        ]);
+      console.log(userProfile);
+      console.log(data.handle);
+      console.log(data.id);
   };
 
   return (

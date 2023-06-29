@@ -48,6 +48,13 @@ export const CreateAndViewAsset = ({ title, desc, setDesc, setTitle, setPostVide
     onDrop,
   });
 
+  const setVideoIpfsHash = () => {
+    {asset?.[0].hash &&
+    setPostVideoUrl(asset?.[0].hash)
+    console.log(asset?.[0].hash)
+    }
+  }
+
   const progressFormatted = useMemo(
     () =>
       progress?.[0].phase === "failed"
@@ -134,6 +141,7 @@ export const CreateAndViewAsset = ({ title, desc, setDesc, setTitle, setPostVide
                 <button
                   onClick={() => {
                     createAsset?.();
+                    setVideoIpfsHash()
                   }}
                   disabled={isLoading || !createAsset}
                   className="bg-white text-green-500 font-semibold text-xl border border-green-500 rounded-lg px-10 py-2 hover:scale-105 hover:bg-green-500 hover:text-white duration-200 "

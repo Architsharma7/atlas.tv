@@ -3,59 +3,99 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { client, challenge, authenticate } from "../components/lens";
 import { useRouter } from "next/router";
+import { useWalletLogin } from "@lens-protocol/react-web";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { InjectedConnector } from "wagmi/connectors/injected";
 
 export default function Home() {
-  const router = useRouter();
+  // const router = useRouter();
+  // const [address, setAddress] = useState();
+  // const [token, setToken] = useState();
+  // useEffect(() => {
+  //   checkConnection();
+  // }, []);
+  // async function checkConnection() {
+  //   const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //   const accounts = await provider.listAccounts();
+  //   if (accounts.length) {
+  //     setAddress(accounts[0]);
+  //   }
+  // }
+  // async function connect() {
+  //   const account = await window.ethereum.send("eth_requestAccounts");
+  //   if (account.result.length) {
+  //     setAddress(account.result[0]);
+  //   }
+  // }
+  // async function login() {
+  //   try {
+  //     const challengeInfo = await client.query({
+  //       query: challenge,
+  //       variables: { address },
+  //     });
+  //     const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //     const signer = provider.getSigner();
+  //     const signature = await signer.signMessage(
+  //       challengeInfo.data.challenge.text
+  //     );
+  //     const authData = await client.mutate({
+  //       mutation: authenticate,
+  //       variables: {
+  //         address,
+  //         signature,
+  //       },
+  //     });
+  //     const {
+  //       data: {
+  //         authenticate: { accessToken },
+  //       },
+  //     } = authData;
+  //     console.log({ accessToken });
+  //     setToken(accessToken);
+  //     {accessToken &&
+  //     router.push("/onboard")
+  //     }
+  //   } catch (err) {
+  //     console.log("Error signing in: ", err);
+  //   }
+  // }
+
+  const {
+    execute: login,
+    error: loginError,
+    isPending: isLoginPending,
+  } = useWalletLogin();
+
   const [address, setAddress] = useState();
-  const [token, setToken] = useState();
-  useEffect(() => {
-    checkConnection();
-  }, []);
-  async function checkConnection() {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const accounts = await provider.listAccounts();
-    if (accounts.length) {
-      setAddress(accounts[0]);
-    }
-  }
+
+  const { isConnected } = useAccount();
+  const { disconnectAsync } = useDisconnect();
+
+  const { connectAsync } = useConnect({
+    connector: new InjectedConnector(),
+  });
+
   async function connect() {
     const account = await window.ethereum.send("eth_requestAccounts");
     if (account.result.length) {
       setAddress(account.result[0]);
     }
   }
-  async function login() {
-    try {
-      const challengeInfo = await client.query({
-        query: challenge,
-        variables: { address },
-      });
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const signature = await signer.signMessage(
-        challengeInfo.data.challenge.text
-      );
-      const authData = await client.mutate({
-        mutation: authenticate,
-        variables: {
-          address,
-          signature,
-        },
-      });
-      const {
-        data: {
-          authenticate: { accessToken },
-        },
-      } = authData;
-      console.log({ accessToken });
-      setToken(accessToken);
-      {accessToken &&
-      router.push("/onboard")
-      }
-    } catch (err) {
-      console.log("Error signing in: ", err);
+
+  const onLoginClick = async () => {
+    if (isConnected) {
+      await disconnectAsync();
     }
-  }
+
+    const { connector } = await connectAsync();
+
+    if (connector instanceof InjectedConnector) {
+      const walletClient = await connector.getWalletClient();
+      await login({
+        address: walletClient.account.address,
+      });
+    }
+  };
 
   return (
     <div>
@@ -128,9 +168,10 @@ export default function Home() {
                         </p>
                       </button>
                     )}
-                    {address && !token && (
+                    {address && (
                       <button
-                        onClick={login}
+                        disabled={isLoginPending}
+                        onClick={onLoginClick}
                         className="focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3.5 px-4 border rounded-lg border-gray-700 text-black flex items-center w-full mt-10 hover:scale-110 hover:bg-green-400 hover:text-white duration-200 hover:border-green-500"
                       >
                         <p className="text-3xl">🌿</p>

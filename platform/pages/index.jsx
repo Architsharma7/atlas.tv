@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import { client, challenge, authenticate } from "../components/lens";
 import { useRouter } from "next/router";
 import { useWalletLogin } from "@lens-protocol/react-web";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useAccount, useConnect, useDisconnect, fetchSigner } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 
 export default function Home() {
@@ -90,9 +90,9 @@ export default function Home() {
     const { connector } = await connectAsync();
 
     if (connector instanceof InjectedConnector) {
-      const walletClient = await connector.getWalletClient();
+      // const walletClient = await connector.getSigner();
       await login({
-        address: walletClient.account.address,
+        address: ((await connector.getSigner()).getAddress())
       });
     }
   };

@@ -1,19 +1,27 @@
 import React, { useEffect } from "react";
-// import { usePublications } from "@lens-protocol/react-web";
+import {
+  PublicationMainFocus,
+  useActiveProfile,
+  useExplorePublications,
+} from "@lens-protocol/react-web";
 
 const Explore = () => {
-  // const { data: publications, loading, hasMore, next } = usePublications();
+  const {} = useActiveProfile();
+  const {
+    data: publications,
+    loading,
+    hasMore,
+    next,
+  } = useExplorePublications({
+    metadataFilter: {
+      restrictPublicationMainFocusTo: PublicationMainFocus.TextOnly,
+    },
+  });
 
-  // const fetchPublications = async () => {
-  //   try {
-  //     lensClient;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-  // useEffect(() => {
-  //   console.log(publications);
-  // }, [loading]);
+  useEffect(() => {
+    console.log(publications);
+  }, [loading]);
+
   return (
     <div>
       <p>Hello</p>

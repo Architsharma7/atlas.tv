@@ -6,9 +6,19 @@ import { LENS_HUB_CONTRACT_ADDRESS, LENS_ABI } from "../constants/lenshub";
 import { create } from "ipfs-http-client";
 import { v4 as uuid } from "uuid";
 
-const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
-const projectSecret = process.env.NEXT_PUBLIC_PROJECT_SECRET
-const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
+import {
+  CollectPolicyType,
+  ContentFocus,
+  ReferencePolicyType,
+  useCreatePost,
+} from "@lens-protocol/react-web";
+
+const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
+const projectSecret = process.env.NEXT_PUBLIC_PROJECT_SECRET;
+const auth =
+  "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
+
+console.log(auth);
 
 const client = create({
   host: "ipfs.infura.io",
@@ -19,34 +29,56 @@ const client = create({
   },
 });
 
-export default function CreatePostModal({title, desc, postVideoUrl}) {
+export default function CreatePostModal({
+  title,
+  desc,
+  postVideoUrl,
+  profile,
+}) {
   /// get the videourl using livepeer
-  const videoUrl = postVideoUrl
-  async function uploadToIPFS() {
-    const metaData = {
-      version: "2.0.0",
-      content: title,
-      description: desc,
-      name: `Post by me`,
-      external_url: ``,
-      metadata_id: uuid(),
-      mainContentFocus: "VIDEO",
-      attributes: [],
-      locale: "en-US",
-      media: videoUrl,
-    };
+  // const videoUrl = postVideoUrl;
+  const videoUrl =
+    "ipfs://bafybeihqsfoh7eq3mgp64riz3v2iv2ksp65kxbadb343st4klj5glnt3pe";
 
-    console.log(auth)
+  const {
+    execute: createPost,
+    error,
+    isPending,
+  } = useCreatePost({
+    publisher: profile,
+    upload: uploadToIPFS,
+  });
 
-    const added = await client.add(JSON.stringify(metaData));
-    const uri = `https://ipfs.infura.io/ipfs/${added.path}`;
-    console.log(uri);
-    return uri;
+  async function uploadToIPFS(data) {
+    try {
+      // const metaData = {
+      //   version: "2.0.0",
+      //   content: title,
+      //   description: desc,
+      //   name: `Post by me`,
+      //   external_url: ``,
+      //   metadata_id: uuid(),
+      //   mainContentFocus: "VIDEO",
+      //   attributes: [],
+      //   locale: "en-US",
+      //   media: videoUrl,
+      // };
+
+      // console.log(auth);
+
+      const added = await client.add(JSON.stringify(data));
+      const uri = `https://ipfs.infura.io/ipfs/${added.path}`;
+      console.log(uri);
+      return uri;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function savePost() {
     const contentURI = await uploadToIPFS();
     const { accessToken } = await refreshAuthToken();
+    console.log(accessToken);
     const createPostRequest = {
       profileId: profile.id,
       contentURI,
@@ -95,10 +127,28 @@ export default function CreatePostModal({title, desc, postVideoUrl}) {
       console.log("error: ", err);
     }
   }
+  async function postWithHook() {
+    await createPost({
+      content: title,
+      contentFocus: ContentFocus.TEXT_ONLY,
+      locale: "en",
+      collect: {
+        type: CollectPolicyType.NO_COLLECT,
+      },
+      reference: {
+        type: ReferencePolicyType.ANYONE,
+      },
+    });
+  }
 
   return (
     <div className="w-5/6 flex justify-center mx-auto mt-6">
-      <button className="bg-white text-green-500 font-semibold text-xl border border-green-500 rounded-lg px-10 py-2 hover:scale-105 hover:bg-green-500 hover:text-white duration-200 " onClick={savePost}>Post</button>
+      <button
+        className="bg-white text-green-500 font-semibold text-xl border border-green-500 rounded-lg px-10 py-2 hover:scale-105 hover:bg-green-500 hover:text-white duration-200 "
+        onClick={savePost}
+      >
+        Post
+      </button>
     </div>
   );
 }

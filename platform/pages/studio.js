@@ -6,6 +6,7 @@ import Image from "next/image";
 import CreatePostModal from "../components/post";
 
 const Post = () => {
+  const { data: profile, loading } = useActiveProfile();
   // const [userData, setUserData] = useState();
 
   // useEffect(() => {
@@ -43,8 +44,21 @@ const Post = () => {
             </div>
           </div>
           <div className="mt-10 flex flex-col h-screen">
-            <CreateAndViewAsset title={title} setDesc={setDesc} setTitle={setTitle} desc={desc} postVideoUrl={postVideoUrl} setPostVideoUrl={setPostVideoUrl}/>
-            <CreatePostModal title={title} setDesc={setDesc} setTitle={setTitle} desc={desc}/>
+            <CreateAndViewAsset
+              title={title}
+              setDesc={setDesc}
+              setTitle={setTitle}
+              desc={desc}
+              postVideoUrl={postVideoUrl}
+              setPostVideoUrl={setPostVideoUrl}
+            />
+            <CreatePostModal
+              title={title}
+              setDesc={setDesc}
+              setTitle={setTitle}
+              desc={desc}
+              profile={profile}
+            />
           </div>
         </div>
       </div>

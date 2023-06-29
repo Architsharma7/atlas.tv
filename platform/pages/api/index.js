@@ -11,6 +11,7 @@ export const basicClient = new Client({
 
 export async function refreshAuthToken() {
   const token = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  console.log(token);
   if (!token) return;
   try {
     const authData = await basicClient
@@ -21,8 +22,9 @@ export async function refreshAuthToken() {
 
     if (!authData.data) return;
 
-    const { accessToken, refreshToken } = authData.data.refresh;
+    const { accessToken, refreshToken } = await authData.data.refresh;
     const exp = parseJwt(refreshToken).exp;
+    console.log(accessToken);
 
     localStorage.setItem(
       STORAGE_KEY,

@@ -24,6 +24,18 @@ contract AtlasRouter is SuperAppBaseCFA {
         ISuperfluid _host
     ) SuperAppBaseCFA(_host, true, true, true) {}
 
+    ///////////  MAIN FUNCTIONS  /////////////
+    function distributeSubscriptions(
+        address[] memory creators,
+        uint128[] memory subShare
+    ) public {
+        /// get the Address of the creators
+        /// check streams
+        /// update if already present on the basis of new share
+        /// or create a new stream to the creator
+        /// this way the distributions is refreshed every few hours
+    }
+
     ///////////  CALLBACK LOGIC  /////////////
 
     function onFlowCreated(

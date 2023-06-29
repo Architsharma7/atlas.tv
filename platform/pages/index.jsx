@@ -4,8 +4,9 @@ import { ethers } from "ethers";
 import { client, challenge, authenticate } from "../components/lens";
 import { useRouter } from "next/router";
 import { useWalletLogin } from "@lens-protocol/react-web";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useAccount, useConnect, useDisconnect, useSigner } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export default function Home() {
   // const router = useRouter();
@@ -66,21 +67,22 @@ export default function Home() {
     isPending: isLoginPending,
   } = useWalletLogin();
 
-  const [address, setAddress] = useState();
+  // const [address, setAddress] = useState();
 
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
   const { disconnectAsync } = useDisconnect();
+  const { data: signer } = useSigner();
 
   const { connectAsync } = useConnect({
     connector: new InjectedConnector(),
   });
 
-  async function connect() {
-    const account = await window.ethereum.send("eth_requestAccounts");
-    if (account.result.length) {
-      setAddress(account.result[0]);
-    }
-  }
+  // async function connect() {
+  //   const account = await window.ethereum.send("eth_requestAccounts");
+  //   if (account.result.length) {
+  //     setAddress(account.result[0]);
+  //   }
+  // }
 
   const onLoginClick = async () => {
     if (isConnected) {
@@ -90,10 +92,8 @@ export default function Home() {
     const { connector } = await connectAsync();
 
     if (connector instanceof InjectedConnector) {
-      const walletClient = await connector.getWalletClient();
-      await login({
-        address: walletClient.account.address,
-      });
+      const signer = await connector.getSigner();
+      await login(signer);
     }
   };
 
@@ -157,18 +157,9 @@ export default function Home() {
                     favourite creators with a single click.
                   </p>
                   <div>
-                    {!address && (
-                      <button
-                        onClick={connect}
-                        className="focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3.5 px-4 border rounded-lg border-gray-700 text-black flex items-center w-full mt-10 hover:scale-110 hover:bg-green-400 hover:text-white duration-200 hover:border-green-500"
-                      >
-                        <p className="text-3xl">🌿</p>
-                        <p className="text-base font-semibold text-center ml-4 text-gray-700">
-                          Connect Wallet
-                        </p>
-                      </button>
-                    )}
-                    {address && (
+                    {!address ? (
+                      <ConnectButton />
+                    ) : (
                       <button
                         disabled={isLoginPending}
                         onClick={onLoginClick}
@@ -180,6 +171,18 @@ export default function Home() {
                         </p>
                       </button>
                     )}
+                    {/* {address && (
+                      <button
+                        disabled={isLoginPending}
+                        onClick={onLoginClick}
+                        className="focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3.5 px-4 border rounded-lg border-gray-700 text-black flex items-center w-full mt-10 hover:scale-110 hover:bg-green-400 hover:text-white duration-200 hover:border-green-500"
+                      >
+                        <p className="text-3xl">🌿</p>
+                        <p className="text-base font-semibold text-center ml-4 text-gray-700">
+                          Login with Lens
+                        </p>
+                      </button>
+                    )} */}
                   </div>
                 </div>
               </div>

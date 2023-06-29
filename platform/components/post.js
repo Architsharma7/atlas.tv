@@ -145,7 +145,7 @@ export default function CreatePostModal({
     <div className="w-5/6 flex justify-center mx-auto mt-6">
       <button
         className="bg-white text-green-500 font-semibold text-xl border border-green-500 rounded-lg px-10 py-2 hover:scale-105 hover:bg-green-500 hover:text-white duration-200 "
-        onClick={savePost}
+        onClick={postWithHook}
       >
         Post
       </button>

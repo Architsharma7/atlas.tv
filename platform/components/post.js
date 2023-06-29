@@ -5,11 +5,10 @@ import { refreshAuthToken } from "../pages/api";
 import { LENS_HUB_CONTRACT_ADDRESS, LENS_ABI } from "../constants/lenshub";
 import { create } from "ipfs-http-client";
 import { v4 as uuid } from "uuid";
-import { useRef } from "react";
 
-const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
+const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 const projectSecret = process.env.NEXT_PUBLIC_PROJECT_SECRET
-const auth =  'Basic '+ Buffer.from(projectId+ ':' + projectSecret).toString('base64');
+const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
 
 const client = create({
   host: "ipfs.infura.io",
@@ -20,23 +19,24 @@ const client = create({
   },
 });
 
-export default function CreatePostModal() {
+export default function CreatePostModal({title, desc, postVideoUrl}) {
   /// get the videourl using livepeer
-  const videoUrl = ""
-  const inputRef = useRef(null);
+  const videoUrl = postVideoUrl
   async function uploadToIPFS() {
     const metaData = {
       version: "2.0.0",
-      content: "hello",
-      description: "bye",
+      content: title,
+      description: desc,
       name: `Post by me`,
       external_url: ``,
       metadata_id: uuid(),
       mainContentFocus: "VIDEO",
       attributes: [],
       locale: "en-US",
-      media : videoUrl
+      media: videoUrl,
     };
+
+    console.log(auth)
 
     const added = await client.add(JSON.stringify(metaData));
     const uri = `https://ipfs.infura.io/ipfs/${added.path}`;
@@ -97,8 +97,8 @@ export default function CreatePostModal() {
   }
 
   return (
-    <div>
-      <button onClick={savePost}>post</button>
+    <div className="w-5/6 flex justify-center mx-auto mt-6">
+      <button className="bg-white text-green-500 font-semibold text-xl border border-green-500 rounded-lg px-10 py-2 hover:scale-105 hover:bg-green-500 hover:text-white duration-200 " onClick={savePost}>Post</button>
     </div>
   );
 }

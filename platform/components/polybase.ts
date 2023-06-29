@@ -2,5 +2,7 @@ import { Polybase } from "@polybase/client";
 
 const db = new Polybase({
   defaultNamespace:
-    "pk/0xf868433a12a9d57e355176a00ee6b5c80ed1fe2c939d81062e0251081994f039d1ce57a55e66571da21ef0466200304dfb18ad7200533c44e83a036b5c088a42/ARK",
+    "pk/0xdd6503afa34792ca49abce644c46527bc2f664299797958e7780d21b4713a9698d35124fa269561f078f89c4aea969a862a20021f3f4042e1d5e5803817e28d3/atlas.tv",
 });
+
+export default db

@@ -1,11 +1,13 @@
-import { React, useState } from "react";
+import { React, useState, useCallback, createRef } from "react";
 import { Polybase } from "@polybase/client";
 import * as eth from "@polybase/eth";
 import { useActiveProfile } from "@lens-protocol/react-web";
 import { Web3Storage } from "web3.storage";
+import Image from "next/image";
+import { useRouter } from "next/router";
 
 function getAccessToken() {
-  return process.env.WEB3STORAGE_TOKEN;
+  return process.env.NEXT_PUBLIC_WEB3STORAGE_TOKEN;
 }
 
 function makeStorageClient() {
@@ -24,20 +26,20 @@ const CreatorOnboard = () => {
     channelName: "",
     channelDescription: "",
     emailId: "",
+    userName: "",
   });
-  const [profileImageUrl, setProfileImageUrl] = useState();
+  const [profileImageUrl, setProfileImageUrl] = useState("");
 
   async function storeFiles(image) {
     const client = makeStorageClient();
-    const cid = await client.put(
-      ([image],
-      {
-        wrapWithDirectory: false,
-      })
-    );
+    const cid = await client.put([image], {
+      wrapWithDirectory: false,
+    });
     console.log("stored files with cid:", cid);
-    return cid;
+    setProfileImageUrl(cid);
   }
+
+  const router = useRouter();
 
   const createCreatorRecord = async () => {
     db.signer(async (data) => {
@@ -51,6 +53,26 @@ const CreatorOnboard = () => {
 
     await db.collection("CreatorProfile").create([data.id, data.handle]);
 
+    console.log(userProfile);
+    console.log(data.handle);
+    console.log(data.id);
+    console.log(userProfile.channelDescription);
+
+    createChannelData();
+
+    router.push("/studio");
+  };
+
+  const createChannelData = async () => {
+    db.signer(async (data) => {
+      const accounts = await eth.requestAccounts();
+      const account = accounts[0];
+
+      const sig = await eth.sign(data, account);
+
+      return { h: "eth-personal-sign", sig };
+    });
+
     await db
       .collection("CreatorProfile")
       .record(data.id)
@@ -59,56 +81,126 @@ const CreatorOnboard = () => {
         userProfile.channelName,
         profileImageUrl,
         userProfile.emailId,
-        userName,
+        userProfile.userName,
       ]);
-    console.log(userProfile);
-    console.log(data.handle);
-    console.log(data.id);
   };
+
+  const fileInputRef = createRef();
 
   return (
     <div>
-      <div className="flex flex-col">
-        {/* <p>{data.handle}</p> */}
-        <p>name</p>
-        <input
-          onChange={(e) =>
-            setUserProfile({ ...userProfile, userName: e.target.value })
-          }
-        ></input>
-        <p>email</p>
-        <input
-          onChange={(e) =>
-            setUserProfile({ ...userProfile, emailId: e.target.value })
-          }
-        ></input>
-        <p>channelname</p>
-        <input
-          onChange={(e) =>
-            setUserProfile({ ...userProfile, channelName: e.target.value })
-          }
-        ></input>
-        <p>profile image</p>
-        <input
-          onChange={
-            // (e) => setProfileImageUrl(URL.createObjectURL(e.target.files[0]))
-            (e) =>
-            setProfileImageUrl(e.target.files[0])
-          }
-          type="file"
-          accept="image/png, image/jpg, image/jpeg"
-        ></input>
-        <button onClick={() => storeFiles(profileImageUrl)}>upload</button>
-        <p>channeldesc</p>
-        <input
-          onChange={(e) =>
-            setUserProfile({
-              ...userProfile,
-              channelDescription: e.target.value,
-            })
-          }
-        ></input>
-        <button onClick={createCreatorRecord}>create</button>
+      <div className="flex w-screen">
+        <div className="w-3/4 flex justify-center mx-auto">
+          <div className="mt-10 flex flex-col items-center">
+            <div>
+              <p className="text-5xl text-black font-semibold">
+                Join Atlas.tv as a Creator
+              </p>
+            </div>
+            <div className="mt-10">
+              <p className="text-2xl text-black font-semibold">
+                Tell us about Yourself
+              </p>
+            </div>
+            <div className="mt-10">
+              <div className="flex w-full justify-between align-middle">
+                <div className="flex flex-col">
+                  <div className="mt-2">
+                    <div
+                      onClick={() => fileInputRef.current.click()}
+                      className="text-sm w-20 h-20 rounded-full border border-black flex items-center mx-10 cursor-pointer"
+                    >
+                      {profileImageUrl ? (
+                        // <img
+                        //   src={URL.createObjectURL(profileImageUrl)}
+                        //   alt="img"
+                        //   // width={100}
+                        //   // height={120}
+                        //   className=" rounded-full w-full h-full"
+                        // />
+                        <p>image</p>
+                      ) : (
+                        <p className="flex items-center mx-auto">select</p>
+                      )}
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={fileInputRef}
+                      onChange={(e) => setProfileImageUrl(e.target.files[0])}
+                      hidden
+                    />
+                  </div>
+                  <div>
+                    <button
+                      onClick={() => storeFiles(`https://w3s.link/ipfs/${profileImageUrl}`)}
+                      className={`flex items-center mx-auto mt-2 border border-white bg-green-500 px-6 py-1 rounded-xl text-white`}
+                    >
+                      upload
+                    </button>
+                  </div>
+                </div>
+                <div className="flex flex-col mx-10">
+                  <div>
+                    <p className="text-xl">Name</p>
+                    <input
+                      onChange={(e) =>
+                        setUserProfile({
+                          ...userProfile,
+                          userName: e.target.value,
+                        })
+                      }
+                      className="bg-white border border-black px-4 py-1 rounded-lg mt-2 text-black w-full"
+                    ></input>
+                  </div>
+                  <div className="mt-5">
+                    <p className="text-xl">Email</p>
+                    <input
+                      onChange={(e) =>
+                        setUserProfile({
+                          ...userProfile,
+                          emailId: e.target.value,
+                        })
+                      }
+                      className="bg-white border border-black px-4 py-1 rounded-lg mt-2 text-black w-full"
+                    ></input>
+                  </div>
+                  <div className="mt-5">
+                    <p className="text-xl">Channel Name</p>
+                    <input
+                      onChange={(e) =>
+                        setUserProfile({
+                          ...userProfile,
+                          channelName: e.target.value,
+                        })
+                      }
+                      className="bg-white border border-black px-4 py-1 rounded-lg mt-2 text-black w-full"
+                    ></input>
+                  </div>
+                  <div className="mt-5">
+                    <p className="text-xl">Channel Description</p>
+                    <textarea
+                      onChange={(e) =>
+                        setUserProfile({
+                          ...userProfile,
+                          channelDescription: e.target.value,
+                        })
+                      }
+                      className="bg-white border border-black px-4 py-1 rounded-lg mt-2 text-black w-full h-40"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={createCreatorRecord}
+              disabled={profileImageUrl == "" ? true : false}
+              className={`bg-white text-green-500 border border-green-500 px-10 py-2 mt-10 rounded-xl font-semibold text-xl hover:scale-105 hover:bg-green-500 hover:text-white duration-200`}
+            >
+              Create Channel
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

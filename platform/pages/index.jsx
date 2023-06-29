@@ -92,10 +92,8 @@ export default function Home() {
     const { connector } = await connectAsync();
 
     if (connector instanceof InjectedConnector) {
-      const walletClient = await connector.getWalletClient();
-      await login({
-        address: walletClient.account.address,
-      });
+      const signer = await connector.getSigner();
+      await login(signer);
     }
   };
 

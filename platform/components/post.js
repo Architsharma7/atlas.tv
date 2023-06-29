@@ -127,9 +127,19 @@ export default function CreatePostModal({
       console.log("error: ", err);
     }
   }
+
+  // Metadata Std : https://docs.lens.xyz/docs/metadata-standards#metadata-structure
   async function postWithHook() {
     await createPost({
       content: title,
+      media: [
+        {
+          altTag: "",
+          url: "",
+          mimeType: "",
+          cover: "",
+        },
+      ],
       contentFocus: ContentFocus.TEXT_ONLY,
       locale: "en",
       collect: {

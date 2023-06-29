@@ -132,14 +132,14 @@ export default function CreatePostModal({
   async function postWithHook() {
     await createPost({
       content: title,
-      media: [
-        {
-          altTag: "",
-          url: "",
-          mimeType: "",
-          cover: "",
-        },
-      ],
+      // media: [
+      //   {
+      //     altTag: "",
+      //     url: "",
+      //     mimeType: "",
+      //     cover: "",
+      //   },
+      // ],
       contentFocus: ContentFocus.TEXT_ONLY,
       locale: "en",
       collect: {

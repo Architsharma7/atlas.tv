@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   PublicationMainFocus,
   useActiveProfile,
@@ -9,6 +9,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 
 const Explore = () => {
+  const [allPublications, setAllPublications] = useState();
   const {} = useActiveProfile();
   const {
     data: publications,
@@ -24,6 +25,9 @@ const Explore = () => {
 
   useEffect(() => {
     console.log(publications);
+    if (publications != undefined) {
+      setAllPublications(publications);
+    }
   }, [loading]);
 
   const router = useRouter();

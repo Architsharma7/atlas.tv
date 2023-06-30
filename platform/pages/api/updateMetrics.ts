@@ -6,7 +6,10 @@ export const config = {
 
 export default (request: NextRequest) => {
   /// gets the data of the signed up creators
+  const creators = [];
+
   /// gets thier videos
+
   /// gets views and watchHours from Livepeer
   /// calculate total for each creator and store
   /// update them in the polybase database

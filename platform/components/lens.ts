@@ -3,8 +3,8 @@ import { bindings as wagmiBindings } from "@lens-protocol/wagmi";
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client'
 
 const lensConfig: LensConfig = {
-  appId: appId("Atlas.tv"), // the publications will be tagged with this AppID
-  sources: [appId("Atlas.tv")], // the Publications will be filtered by this AppId
+  appId: appId("Atlastv"), // the publications will be tagged with this AppID
+  sources: [appId("Atlastv")], // the Publications will be filtered by this AppId
   bindings: wagmiBindings(),
   environment: development,
 };

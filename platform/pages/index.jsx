@@ -117,30 +117,24 @@ export default function Home() {
               <div className="w-full mt-20">
                 <div className="grid grid-flow-col grid-cols-3 grid-rows-1 gap-x-5">
                   <div className="border-4 border-green-500 rounded-xl flex flex-col items-center px-3">
-                    <p className="text-2xl mt-2">hello</p>
+                    <p className="text-2xl mt-2">Fully Gated</p>
                     <p className="mt-4 mb-3 text-xl justify-start">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Quae nemo natus itaque facilis dolor, neque provident
-                      doloremque sequi ipsam omnis quasi impedit iure facere.
-                      Pariatur cupiditate odio error debitis nesciunt.
+                      Only users who have started the stream are allowed to view
+                      the exclusive content of the creators
                     </p>
                   </div>
                   <div className="border-4 border-green-500 rounded-xl flex flex-col items-center px-3">
-                    <p className="text-2xl mt-2">hello</p>
+                    <p className="text-2xl mt-2">Creators Benefit</p>
                     <p className="mt-4 mb-3 text-xl justify-start">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Quae nemo natus itaque facilis dolor, neque provident
-                      doloremque sequi ipsam omnis quasi impedit iure facere.
-                      Pariatur cupiditate odio error debitis nesciunt.
+                      Content creators gets all the benefit of the stream with
+                      0% platform fees through SuperFluid streams
                     </p>
                   </div>
                   <div className="border-4 border-green-500 rounded-xl flex flex-col items-center px-3">
-                    <p className="text-2xl mt-2">hello</p>
+                    <p className="text-2xl mt-2">On demand Content</p>
                     <p className="mt-4 mb-3 text-xl justify-start">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Quae nemo natus itaque facilis dolor, neque provident
-                      doloremque sequi ipsam omnis quasi impedit iure facere.
-                      Pariatur cupiditate odio error debitis nesciunt.
+                      Users get the best content and can support their favourite
+                      content creators on our platform
                     </p>
                   </div>
                 </div>
@@ -159,17 +153,27 @@ export default function Home() {
                   </p>
                   <div>
                     {!address ? (
-                      <ConnectButton />
+                      <div className="flex justify-center items-center mt-5">
+                        <ConnectButton />
+                      </div>
                     ) : (
                       <>
                         {wallet ? (
                           <>
-                            <p>Logged In</p>
-                            <button onClick={logout}>Sign Out</button>
+                            <p className="flex justify-center mt-3">
+                              Logged In
+                            </p>
+                            <button
+                              onClick={logout}
+                              className="focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3.5 px-4 border rounded-lg border-gray-700 text-black flex items-center w-full mt-10 hover:scale-110 hover:bg-green-400 hover:text-white duration-200 hover:border-green-500"
+                            >
+                              Sign Out
+                            </button>
                             <button
                               onClick={() => {
                                 router.push("/onboard");
                               }}
+                              className="focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3.5 px-4 border rounded-lg border-gray-700 text-black flex items-center w-full mt-10 hover:scale-110 hover:bg-green-400 hover:text-white duration-200 hover:border-green-500"
                             >
                               Sign Up
                             </button>

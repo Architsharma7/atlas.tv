@@ -6,6 +6,8 @@ import { LENS_HUB_CONTRACT_ADDRESS, LENS_ABI } from "../constants/lenshub";
 import { create } from "ipfs-http-client";
 import { v4 as uuid } from "uuid";
 import { useActiveProfile } from "@lens-protocol/react-web";
+import { Polybase } from "@polybase/client";
+import * as eth from "@polybase/eth";
 
 const db = new Polybase({
   defaultNamespace:
@@ -147,22 +149,25 @@ export default function CreatePostModal({
     }
   }
 
-
   const createCreatorVideoRecord = async () => {
-    db.signer(async (data) => {
+    db.signer(async (profile) => {
       const accounts = await eth.requestAccounts();
       const account = accounts[0];
 
-      const sig = await eth.sign(data, account);
+      const sig = await eth.sign(profile, account);
 
       return { h: "eth-personal-sign", sig };
     });
 
-    await db.collection("addVideos").record(data.id)
-    .call("setCreatorAbout", [
+    await db.collection("CreatorProfile").record(profile.id)
+    .call("addVideos", [
       postVideoUrl
     ])
   };
+
+  const route = ( ) => {
+    router.push("/explore")
+  }
 
   // Metadata Std : https://docs.lens.xyz/docs/metadata-standards#metadata-structure
   async function postWithHook() {
@@ -179,7 +184,7 @@ export default function CreatePostModal({
         {
           mimeType: "video/mp4",
           url: postVideoUrl,
-          altTag: "Atlas Video",
+          altTag: livepeerLink,
           cover: postVideoCover,
         },
       ],
@@ -194,8 +199,9 @@ export default function CreatePostModal({
     });
 
     await createCreatorVideoRecord();
-    await router.push("/explore");
+    route();
   }
+
 
   return (
     <div className="w-5/6 flex justify-center mx-auto mt-6">

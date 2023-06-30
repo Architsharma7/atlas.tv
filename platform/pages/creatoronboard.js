@@ -137,7 +137,7 @@ const CreatorOnboard = () => {
                         //   height={120}
                         //   className="rounded-full w-full h-full"
                         // />
-                        <p className="text-center items-center">image</p>
+                        <p className="text-center items-center">image(0)</p>
                       ) : (
                         <p className="flex items-center mx-auto">select</p>
                       )}

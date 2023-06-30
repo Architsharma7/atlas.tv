@@ -83,6 +83,9 @@ export const CreateAndViewAsset = ({
   const livepeerUpload = () => {
     setVideoIpfsHash();
     storeLivepeerPlaybackId();
+    // if (postVideoUrl && livepeerLink) {
+    //   alert("Data Stored and ready to post");
+    // }
   };
 
   const progressFormatted = useMemo(

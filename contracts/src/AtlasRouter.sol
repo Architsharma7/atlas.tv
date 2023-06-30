@@ -31,7 +31,8 @@ contract AtlasRouter {
     ///////////  MAIN FUNCTIONS  /////////////
     function distributeSubscriptions(
         address[] memory creators,
-        int96[] memory flowRates
+        int96[] memory shares,
+        int96 totalShares
     ) public {
         /// get the Address of the creators
         uint totalCreators = creators.length;
@@ -130,12 +131,8 @@ contract AtlasRouter {
         ).getFlowInfo(user, address(this));
     }
 
-    function getNetStreamInfo(
-        address superTokenAddress
-    ) public returns (int96 flowRate) {
-        (flowRate) = ISuperToken(superTokenAddress).getNetFlowRate(
-            address(this)
-        );
+    function getNetStreamInfo() public returns (int96 flowRate) {
+        (flowRate) = acceptedSuperToken.getNetFlowRate(address(this));
     }
 
     function wrapSuperTokenUser(

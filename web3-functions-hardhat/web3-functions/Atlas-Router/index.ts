@@ -5,8 +5,27 @@ import {
 import { utils } from "ethers";
 import ky from "ky"; // we recommend using ky as axios doesn't support fetch by default
 
-const Atlas_Router_ABI = [];
-const Atlas_Router_Address = "";
+const Atlas_Router_ABI = [
+  {
+    inputs: [
+      {
+        internalType: "address[]",
+        name: "creators",
+        type: "address[]",
+      },
+      {
+        internalType: "int96[]",
+        name: "flowRates",
+        type: "int96[]",
+      },
+    ],
+    name: "distributeSubscriptions",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+];
+const Atlas_Router_Address = "0xF9c9a7271468e719604CeAEF0fBb0d98007bF4FC";
 
 Web3Function.onRun(async (context: Web3FunctionContext) => {
   const { userArgs, storage, multiChainProvider } = context;

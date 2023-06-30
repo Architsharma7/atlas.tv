@@ -22,7 +22,7 @@ export function AtlasSubscriptionComponent() {
                 paymentDetails={paymentDetails}
                 productDetails={productDetails}
                 tokenList={superTokenList}
-                type="dialog"
+                type="full-screen"
                 walletManager={walletManager}
               >
                 {({ openModal }) => (
@@ -79,7 +79,7 @@ export function AtlasCreatorSubscriptionComponent(props) {
                 paymentDetails={paymentDetails}
                 productDetails={productDetails}
                 tokenList={superTokenList}
-                type="dialog"
+                type="full-screen"
                 walletManager={walletManager}
               >
                 {({ openModal }) => (

@@ -2,6 +2,7 @@ import { React, useState } from "react";
 import { Polybase } from "@polybase/client";
 import * as eth from "@polybase/eth";
 import { useActiveProfile } from "@lens-protocol/react-web";
+import { useRouter } from "next/router";
 
 const db = new Polybase({
   defaultNamespace:
@@ -10,6 +11,7 @@ const db = new Polybase({
 
 const UserOnboard = () => {
   const { data, loading } = useActiveProfile();
+  const router = useRouter();
 
   const [userProfile, setUserProfile] = useState({
     userName: "",
@@ -26,11 +28,11 @@ const UserOnboard = () => {
       return { h: "eth-personal-sign", sig };
     });
 
-    await db.collection("UserProfile").create([data.id, data.handle]);
+    await db.collection("UserProfile").create(["21", data.handle]);
 
     await db
       .collection("UserProfile")
-      .record(data.id)
+      .record("21")
       .call("setUserAbout", [userProfile.userName, userProfile.emailId]);
     console.log(userProfile);
     console.log(data.handle);
@@ -79,6 +81,9 @@ const UserOnboard = () => {
                       className="bg-white border border-black px-4 py-1 rounded-lg mt-2 text-black w-full"
                     ></input>
                   </div>
+                  <button onClick={() => router.push("http://localhost:3001/checkout")} className={`bg-white text-green-500 border border-green-500 px-10 py-2 mt-10 rounded-xl font-semibold text-xl hover:scale-105 hover:bg-green-500 hover:text-white duration-200`}>
+                    Start Subscription Stream
+                  </button>
                   <button
                     onClick={createUserRecord}
                     className={`bg-white text-green-500 border border-green-500 px-10 py-2 mt-10 rounded-xl font-semibold text-xl hover:scale-105 hover:bg-green-500 hover:text-white duration-200`}

@@ -161,7 +161,7 @@ export default function CreatePostModal({
 
     await db
       .collection("CreatorProfile")
-      .record(profile.id)
+      .record(data.id)
       .call("addVideos", [postVideoUrl]);
   };
 

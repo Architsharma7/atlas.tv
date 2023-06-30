@@ -15,60 +15,99 @@ import {SuperAppBaseCFA} from "@superfluid-finance/ethereum-contracts/contracts/
 // - Distribute these streams to the creator , according to the stats
 // - A Stream will be started whenever a new flow is created , we will just update the Flow to the users
 // - Can be based on the number of Views and Watch hours for the creator
-contract AtlasRouter is SuperAppBaseCFA {
+contract AtlasRouter {
+    // is SuperAppBaseCFA
+
     using SuperTokenV1Library for ISuperToken;
     ISuperToken public acceptedSuperToken;
 
-    constructor(
-        ISuperToken _acceptedSuperToken,
-        ISuperfluid _host
-    ) SuperAppBaseCFA(_host, true, true, true) {}
+    // constructor(
+    //     ISuperToken _acceptedSuperToken,
+    //     ISuperfluid _host
+    // ) SuperAppBaseCFA(_host, true, true, true) {}
+
+    constructor(ISuperToken _acceptedSuperToken) {}
 
     ///////////  MAIN FUNCTIONS  /////////////
     function distributeSubscriptions(
         address[] memory creators,
-        uint128[] memory subShare
+        int96[] memory flowRates
     ) public {
         /// get the Address of the creators
-        /// check streams
-        /// update if already present on the basis of new share
-        /// or create a new stream to the creator
+        uint totalCreators = creators.length;
+        for (uint256 i; i < totalCreators; ) {
+            address creator = creators[i];
+            int96 flowRate = flowRates[i];
+
+            require(creator != address(0), "INVALID ADDRESS");
+
+            if (flowRate == 0) {
+                // delete a flow if the flow Rate == 0 , meaning the creator is either not active , or no views
+                acceptedSuperToken.deleteFlow(address(this), creator);
+            } else {
+                /// check streams
+                if (
+                    acceptedSuperToken.getFlowRate(address(this), creator) == 0
+                ) {
+                    /// or create a new stream to the creator
+                    bool success = acceptedSuperToken.createFlow(
+                        creator,
+                        flowRate
+                    );
+                    require(success, "CREATE FLOW FAILED");
+                }
+                // otherwise, there's already outflows which should be increased
+                /// update if already present on the basis of new share
+                else {
+                    bool success = acceptedSuperToken.updateFlow(
+                        creator,
+                        flowRate
+                    );
+                    require(success, "UPDATE FLOW FAILED");
+                }
+            }
+
+            unchecked {
+                i++;
+            }
+        }
+        /// ISSUE : The Older flow for the creators who are not yet
         /// this way the distributions is refreshed every few hours
     }
 
     ///////////  CALLBACK LOGIC  /////////////
 
-    function onFlowCreated(
-        ISuperToken superToken,
-        address sender,
-        bytes calldata ctx
-    ) internal override returns (bytes memory newCtx) {
-        newCtx = ctx;
+    // function onFlowCreated(
+    //     ISuperToken superToken,
+    //     address sender,
+    //     bytes calldata ctx
+    // ) internal override returns (bytes memory newCtx) {
+    //     newCtx = ctx;
 
-        // get inflow rate from sender
-        int96 inflowRate = superToken.getFlowRate(sender, address(this));
-    }
+    //     // get inflow rate from sender
+    //     int96 inflowRate = superToken.getFlowRate(sender, address(this));
+    // }
 
-    function onFlowUpdated(
-        ISuperToken superToken,
-        address sender,
-        int96 previousFlowRate,
-        uint256 /*lastUpdated*/,
-        bytes calldata ctx
-    ) internal override returns (bytes memory newCtx) {
-        newCtx = ctx;
-    }
+    // function onFlowUpdated(
+    //     ISuperToken superToken,
+    //     address sender,
+    //     int96 previousFlowRate,
+    //     uint256 /*lastUpdated*/,
+    //     bytes calldata ctx
+    // ) internal override returns (bytes memory newCtx) {
+    //     newCtx = ctx;
+    // }
 
-    function onFlowDeleted(
-        ISuperToken superToken,
-        address /*sender*/,
-        address receiver,
-        int96 previousFlowRate,
-        uint256 /*lastUpdated*/,
-        bytes calldata ctx
-    ) internal override returns (bytes memory newCtx) {
-        newCtx = ctx;
-    }
+    // function onFlowDeleted(
+    //     ISuperToken superToken,
+    //     address /*sender*/,
+    //     address receiver,
+    //     int96 previousFlowRate,
+    //     uint256 /*lastUpdated*/,
+    //     bytes calldata ctx
+    // ) internal override returns (bytes memory newCtx) {
+    //     newCtx = ctx;
+    // }
 
     /*///////////////////////////////////////////////////////////////
                            Superfluid

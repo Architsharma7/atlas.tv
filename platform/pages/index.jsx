@@ -3,7 +3,11 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { client, challenge, authenticate } from "../components/lens";
 import { useRouter } from "next/router";
-import { useActiveWallet, useWalletLogin } from "@lens-protocol/react-web";
+import {
+  useActiveWallet,
+  useWalletLogin,
+  useWalletLogout,
+} from "@lens-protocol/react-web";
 import { useAccount, useConnect, useDisconnect, useSigner } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -68,6 +72,8 @@ export default function Home() {
   } = useWalletLogin();
   const { data: wallet, loading } = useActiveWallet();
 
+  const { execute: logout, isPending } = useWalletLogout();
+
   // const [address, setAddress] = useState();
 
   const { isConnected, address } = useAccount();
@@ -88,9 +94,8 @@ export default function Home() {
     if (connector instanceof InjectedConnector) {
       const signer = await connector.getSigner();
       await login(signer);
-      router.push("/onboard")
+      router.push("/onboard");
     }
-
   };
 
   return (
@@ -157,20 +162,30 @@ export default function Home() {
                       <ConnectButton />
                     ) : (
                       <>
-                        {/* {wallet ? (
-                          <p>Logged In</p>
-                        ) : ( */}
-                        <button
-                          disabled={isLoginPending}
-                          onClick={onLoginClick}
-                          className="focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3.5 px-4 border rounded-lg border-gray-700 text-black flex items-center w-full mt-10 hover:scale-110 hover:bg-green-400 hover:text-white duration-200 hover:border-green-500"
-                        >
-                          <p className="text-3xl">🌿</p>
-                          <p className="text-base font-semibold text-center ml-4 text-gray-700">
-                            Login with Lens
-                          </p>
-                        </button>
-                        {/* )} */}
+                        {wallet ? (
+                          <>
+                            <p>Logged In</p>
+                            <button onClick={logout}>Sign Out</button>
+                            <button
+                              onClick={() => {
+                                router.push("/onboard");
+                              }}
+                            >
+                              Sign Up
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            disabled={isLoginPending}
+                            onClick={onLoginClick}
+                            className="focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3.5 px-4 border rounded-lg border-gray-700 text-black flex items-center w-full mt-10 hover:scale-110 hover:bg-green-400 hover:text-white duration-200 hover:border-green-500"
+                          >
+                            <p className="text-3xl">🌿</p>
+                            <p className="text-base font-semibold text-center ml-4 text-gray-700">
+                              Login with Lens
+                            </p>
+                          </button>
+                        )}
                       </>
                     )}
                     {/* {address && (

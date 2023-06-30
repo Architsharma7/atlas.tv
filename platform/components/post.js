@@ -19,7 +19,7 @@ const projectSecret = process.env.NEXT_PUBLIC_PROJECT_SECRET;
 const auth =
   "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
 
-console.log(auth);
+// console.log(auth);
 
 const client = create({
   host: "ipfs.infura.io",
@@ -34,48 +34,56 @@ export default function CreatePostModal({
   title,
   desc,
   postVideoUrl,
-  profile,
+  postVideoCover,
+  livepeerLink,
 }) {
   /// get the videourl using livepeer
   // const videoUrl = postVideoUrl;
   // const videoUrl =
   //   "ipfs://bafybeihqsfoh7eq3mgp64riz3v2iv2ksp65kxbadb343st4klj5glnt3pe";
-  const { data } = useActiveProfile();
+  const { data: profile } = useActiveProfile();
 
   const {
     execute: createPost,
     error,
-    isPending
+    isPending,
   } = useCreatePost({
     publisher: profile,
     upload: uploadToIPFS,
   });
 
   async function uploadToIPFS(data) {
-    // try {
-    //   const metaData = {
-    //     version: "2.0.0",
-    //     content: "first video",
-    //     description: "hello",
-    //     name: `Post by me`,
-    //     external_url: ``,
-    //     metadata_id: uuid(),
-    //     mainContentFocus: PublicationMainFocus.VIDEO,
-    //     attributes: [],
-    //     locale: "en-US",
-    //     media: "https://ipfs.io/ipfs/bafybeihqsfoh7eq3mgp64riz3v2iv2ksp65kxbadb343st4klj5glnt3pe",
-    //     appId: 'Atlas.tv'
-    //   };
+    try {
+      // const metaData = {
+      //   version: "2.0.0",
+      //   content: "first video",
+      //   description: "hello",
+      //   name: `Post by me`,
+      //   external_url: ``,
+      //   metadata_id: uuid(),
+      //   mainContentFocus: PublicationMainFocus.VIDEO,
+      //   attributes: [],
+      //   locale: "en-US",
+      //   media: "https://ipfs.io/ipfs/bafybeihqsfoh7eq3mgp64riz3v2iv2ksp65kxbadb343st4klj5glnt3pe",
+      //   appId: 'Atlas.tv'
+      // };
 
-      // console.log(auth);
+      // description and Media issue , external URL
 
-  //     const added = await client.add(JSON.stringify(data));
-  //     const uri = `https://ipfs.infura.io/ipfs/${added.path}`;
-  //     console.log(uri);
-  //     return uri;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
+      const metadata = {
+        ...data,
+        description: desc,
+        external_url: livepeerLink,
+      };
+
+      const added = await client.add(JSON.stringify(metadata));
+      console.log(metadata);
+      const uri = `https://ipfs.infura.io/ipfs/${added.path}`;
+      console.log(uri);
+      return uri;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function savePost() {
@@ -133,17 +141,23 @@ export default function CreatePostModal({
 
   // Metadata Std : https://docs.lens.xyz/docs/metadata-standards#metadata-structure
   async function postWithHook() {
+    // {
+    //   mimeType: "video/mp4",
+    //   url: "ipfs://bafybeihqsfoh7eq3mgp64riz3v2iv2ksp65kxbadb343st4klj5glnt3pe",
+    //   altTag: "Atlas Video",
+    //   cover:
+    //     "ipfs://bafybeigdm4lxpdir3dn5gngzzltachvpkr6tf2utkm6lohexcw46fr4q6e",
+    // },
     await createPost({
-      content : "first video",
-      contentURI: "https://ipfs.io/ipfs/bafybeihqsfoh7eq3mgp64riz3v2iv2ksp65kxbadb343st4klj5glnt3pe",
-      // media: [
-      //   {
-      //     altTag: "first video post",
-      //     item: "https://ipfs.io/ipfs/bafybeihqsfoh7eq3mgp64riz3v2iv2ksp65kxbadb343st4klj5glnt3pe",
-      //     mimeType: "video/mp4",
-      //     cover: "https://w3s.link/ipfs/bafybeigdm4lxpdir3dn5gngzzltachvpkr6tf2utkm6lohexcw46fr4q6e",
-      //   },
-      // ],
+      content: title,
+      media: [
+        {
+          mimeType: "video/mp4",
+          url: postVideoUrl,
+          altTag: "Atlas Video",
+          cover: postVideoCover,
+        },
+      ],
       contentFocus: ContentFocus.VIDEO,
       locale: "en",
       collect: {

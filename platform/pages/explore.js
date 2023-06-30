@@ -13,8 +13,9 @@ const Explore = () => {
     hasMore,
     next,
   } = useExplorePublications({
+    limit: 10,
     metadataFilter: {
-      restrictPublicationMainFocusTo: PublicationMainFocus.TextOnly,
+      restrictPublicationMainFocusTo: PublicationMainFocus.Video,
     },
   });
 

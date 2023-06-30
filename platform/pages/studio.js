@@ -57,7 +57,6 @@ const Post = () => {
               setDesc={setDesc}
               setTitle={setTitle}
               desc={desc}
-              profile={profile}
             />
           </div>
         </div>

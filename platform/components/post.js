@@ -5,6 +5,7 @@ import { refreshAuthToken } from "../pages/api";
 import { LENS_HUB_CONTRACT_ADDRESS, LENS_ABI } from "../constants/lenshub";
 import { create } from "ipfs-http-client";
 import { v4 as uuid } from "uuid";
+import { useActiveProfile } from "@lens-protocol/react-web";
 
 import {
   CollectPolicyType,
@@ -37,42 +38,44 @@ export default function CreatePostModal({
 }) {
   /// get the videourl using livepeer
   // const videoUrl = postVideoUrl;
-  const videoUrl =
-    "ipfs://bafybeihqsfoh7eq3mgp64riz3v2iv2ksp65kxbadb343st4klj5glnt3pe";
+  // const videoUrl =
+  //   "ipfs://bafybeihqsfoh7eq3mgp64riz3v2iv2ksp65kxbadb343st4klj5glnt3pe";
+  const { data } = useActiveProfile();
 
   const {
     execute: createPost,
     error,
-    isPending,
+    isPending
   } = useCreatePost({
     publisher: profile,
     upload: uploadToIPFS,
   });
 
   async function uploadToIPFS(data) {
-    try {
-      // const metaData = {
-      //   version: "2.0.0",
-      //   content: title,
-      //   description: desc,
-      //   name: `Post by me`,
-      //   external_url: ``,
-      //   metadata_id: uuid(),
-      //   mainContentFocus: "VIDEO",
-      //   attributes: [],
-      //   locale: "en-US",
-      //   media: videoUrl,
-      // };
+    // try {
+    //   const metaData = {
+    //     version: "2.0.0",
+    //     content: "first video",
+    //     description: "hello",
+    //     name: `Post by me`,
+    //     external_url: ``,
+    //     metadata_id: uuid(),
+    //     mainContentFocus: PublicationMainFocus.VIDEO,
+    //     attributes: [],
+    //     locale: "en-US",
+    //     media: "https://ipfs.io/ipfs/bafybeihqsfoh7eq3mgp64riz3v2iv2ksp65kxbadb343st4klj5glnt3pe",
+    //     appId: 'Atlas.tv'
+    //   };
 
       // console.log(auth);
 
-      const added = await client.add(JSON.stringify(data));
-      const uri = `https://ipfs.infura.io/ipfs/${added.path}`;
-      console.log(uri);
-      return uri;
-    } catch (error) {
-      console.log(error);
-    }
+  //     const added = await client.add(JSON.stringify(data));
+  //     const uri = `https://ipfs.infura.io/ipfs/${added.path}`;
+  //     console.log(uri);
+  //     return uri;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
   }
 
   async function savePost() {
@@ -131,16 +134,17 @@ export default function CreatePostModal({
   // Metadata Std : https://docs.lens.xyz/docs/metadata-standards#metadata-structure
   async function postWithHook() {
     await createPost({
-      content: title,
+      content : "first video",
+      contentURI: "https://ipfs.io/ipfs/bafybeihqsfoh7eq3mgp64riz3v2iv2ksp65kxbadb343st4klj5glnt3pe",
       // media: [
       //   {
-      //     altTag: "",
-      //     url: "",
-      //     mimeType: "",
-      //     cover: "",
+      //     altTag: "first video post",
+      //     item: "https://ipfs.io/ipfs/bafybeihqsfoh7eq3mgp64riz3v2iv2ksp65kxbadb343st4klj5glnt3pe",
+      //     mimeType: "video/mp4",
+      //     cover: "https://w3s.link/ipfs/bafybeigdm4lxpdir3dn5gngzzltachvpkr6tf2utkm6lohexcw46fr4q6e",
       //   },
       // ],
-      contentFocus: ContentFocus.TEXT_ONLY,
+      contentFocus: ContentFocus.VIDEO,
       locale: "en",
       collect: {
         type: CollectPolicyType.NO_COLLECT,

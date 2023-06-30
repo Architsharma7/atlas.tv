@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import {
   PublicationMainFocus,
   useActiveProfile,
+  useExploreProfiles,
   useExplorePublications,
 } from "@lens-protocol/react-web";
 import Image from "next/image";
@@ -33,7 +34,15 @@ const Explore = () => {
               publications.map((publication) => {
                 return (
                   <ul className="border border-black">
-                    <Image src={publication.metadata.media[0].original.cover.replace("ipfs://", "https://ipfs.io/ipfs/")} alt="hello" width={120} height={120}/>
+                    <Image
+                      src={publication.metadata.media[0].original.cover.replace(
+                        "ipfs://",
+                        "https://ipfs.io/ipfs/"
+                      )}
+                      alt="hello"
+                      width={120}
+                      height={120}
+                    />
                   </ul>
                 );
               })}

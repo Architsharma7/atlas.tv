@@ -159,10 +159,17 @@ export default function CreatePostModal({
       return { h: "eth-personal-sign", sig };
     });
 
+<<<<<<< HEAD
+    await db
+      .collection("addVideos")
+      .record(data.id)
+      .call("setCreatorAbout", [postVideoUrl]);
+=======
     await db.collection("CreatorProfile").record(profile.id)
     .call("addVideos", [
       postVideoUrl
     ])
+>>>>>>> 27a65dd2ab533581981e14ef9f1d7c74ca7203db
   };
 
   const route = ( ) => {

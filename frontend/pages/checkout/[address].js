@@ -5,15 +5,15 @@ import { useRouter } from "next/router";
 const Checkout = () => {
   const router = useRouter();
   const address = router.query;
-  // add other query Params
 
-  useEffect(() => {}, [address]);
   return (
     <div>
       <AtlasCreatorSubscriptionComponent
-        flowRate={"2"}
-        creatorAddress={"0x7BDa037dFdf9CD9Ad261D27f489924aebbcE71Ac"}
-        creatorName={"John harris"}
+        flowRate={"4"}
+        creatorAddress={
+          address ? address : "0x898d0DBd5850e086E6C09D2c83A26Bb5F1ff8C33"
+        }
+        creatorName={"Angry Bro"}
       ></AtlasCreatorSubscriptionComponent>
     </div>
   );

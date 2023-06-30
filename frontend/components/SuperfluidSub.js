@@ -43,10 +43,10 @@ export function AtlasCreatorSubscriptionComponent(props) {
   console.log(props);
   const paymentOptions = [
     {
-      chainId: 1,
-      receiverAddress: props.creatorAddress,
+      chainId: 80001,
+      receiverAddress: props.creatorAddress.address,
       superToken: {
-        address: "0x1ba8603da702602a8657980e825a6daa03dee93a",
+        address: "0x42bb40bF79730451B11f6De1CbA222F17b87Afd7",
       },
       flowRate: {
         amountEther: props.flowRate,

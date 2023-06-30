@@ -5,6 +5,7 @@ import { useActiveProfile } from "@lens-protocol/react-web";
 import { Web3Storage } from "web3.storage";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { getAccount } from '@wagmi/core'
 
 function getAccessToken() {
   return process.env.NEXT_PUBLIC_WEB3STORAGE_TOKEN;
@@ -29,6 +30,7 @@ const CreatorOnboard = () => {
     userName: "",
   });
   const [profileImageUrl, setProfileImageUrl] = useState("");
+  const [uploaded, setUploaded] = useState(false)
 
   async function storeFiles(image) {
     const client = makeStorageClient();
@@ -37,9 +39,12 @@ const CreatorOnboard = () => {
     });
     console.log("stored files with cid:", cid);
     setProfileImageUrl(cid);
+    setUploaded(true)
   }
 
   const router = useRouter();
+
+  const account = getAccount();
 
   const createCreatorRecord = async () => {
     db.signer(async (data) => {
@@ -51,7 +56,7 @@ const CreatorOnboard = () => {
       return { h: "eth-personal-sign", sig };
     });
 
-    await db.collection("CreatorProfile").create([data.id, data.handle]);
+    await db.collection("CreatorProfile").create([data.id, data.handle, account.address]);
 
     console.log(userProfile);
     console.log(data.handle);
@@ -59,6 +64,7 @@ const CreatorOnboard = () => {
     console.log(userProfile.channelDescription);
 
     createChannelData();
+    createCreatorViewMetric();
 
     router.push("/studio");
   };
@@ -84,6 +90,19 @@ const CreatorOnboard = () => {
         userProfile.userName,
       ]);
   };
+
+  const createCreatorViewMetric = async() => {
+    db.signer(async (data) => {
+      const accounts = await eth.requestAccounts();
+      const account = accounts[0];
+
+      const sig = await eth.sign(data, account);
+
+      return { h: "eth-personal-sign", sig };
+    });
+
+    await  db.collection("ViewMetrics").create([data.id]);
+  }
 
   const fileInputRef = createRef();
 
@@ -114,11 +133,11 @@ const CreatorOnboard = () => {
                         // <img
                         //   src={URL.createObjectURL(profileImageUrl)}
                         //   alt="img"
-                        //   // width={100}
-                        //   // height={120}
-                        //   className=" rounded-full w-full h-full"
+                        //   width={100}
+                        //   height={120}
+                        //   className="rounded-full w-full h-full"
                         // />
-                        <p>image</p>
+                        <p className="text-center items-center">image</p>
                       ) : (
                         <p className="flex items-center mx-auto">select</p>
                       )}
@@ -133,10 +152,12 @@ const CreatorOnboard = () => {
                   </div>
                   <div>
                     <button
-                      onClick={() => storeFiles(`https://w3s.link/ipfs/${profileImageUrl}`)}
+                      onClick={() =>
+                        storeFiles(profileImageUrl)
+                      }
                       className={`flex items-center mx-auto mt-2 border border-white bg-green-500 px-6 py-1 rounded-xl text-white`}
                     >
-                      upload
+                      {uploaded ? "uploaded" : "upload"}
                     </button>
                   </div>
                 </div>

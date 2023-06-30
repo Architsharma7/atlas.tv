@@ -1,12 +1,12 @@
 const paymentOptions = [
   {
-    chainId: 1,
-    receiverAddress: "0x7BDa037dFdf9CD9Ad261D27f489924aebbcE71Ac",
+    chainId: 80001,
+    receiverAddress: "0x8e2412Aa03A75dF7C76E497bdda059c6C2850079",
     superToken: {
-      address: "0x1ba8603da702602a8657980e825a6daa03dee93a",
+      address: "0x42bb40bF79730451B11f6De1CbA222F17b87Afd7",
     },
     flowRate: {
-      amountEther: "1",
+      amountEther: "10",
       period: "month",
     },
   },

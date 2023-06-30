@@ -15,8 +15,13 @@ const Atlas_Router_ABI = [
       },
       {
         internalType: "int96[]",
-        name: "flowRates",
+        name: "shares",
         type: "int96[]",
+      },
+      {
+        internalType: "int96",
+        name: "totalShares",
+        type: "int96",
       },
     ],
     name: "distributeSubscriptions",
@@ -25,7 +30,8 @@ const Atlas_Router_ABI = [
     type: "function",
   },
 ];
-const Atlas_Router_Address = "0xF9c9a7271468e719604CeAEF0fBb0d98007bF4FC";
+
+const Atlas_Router_Address = "0x8e2412Aa03A75dF7C76E497bdda059c6C2850079";
 
 Web3Function.onRun(async (context: Web3FunctionContext) => {
   const { userArgs, storage, multiChainProvider } = context;

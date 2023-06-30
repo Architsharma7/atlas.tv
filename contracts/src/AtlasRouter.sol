@@ -15,18 +15,20 @@ import {SuperAppBaseCFA} from "@superfluid-finance/ethereum-contracts/contracts/
 // - Distribute these streams to the creator , according to the stats
 // - A Stream will be started whenever a new flow is created , we will just update the Flow to the users
 // - Can be based on the number of Views and Watch hours for the creator
-contract AtlasRouter {
-    // is SuperAppBaseCFA
-
+contract AtlasRouter is SuperAppBaseCFA {
     using SuperTokenV1Library for ISuperToken;
     ISuperToken public acceptedSuperToken;
 
-    // constructor(
-    //     ISuperToken _acceptedSuperToken,
-    //     ISuperfluid _host
-    // ) SuperAppBaseCFA(_host, true, true, true) {}
+    int96 public totalInflowRate;
 
-    constructor(ISuperToken _acceptedSuperToken) {}
+    constructor(
+        ISuperToken _acceptedSuperToken,
+        ISuperfluid _host
+    ) SuperAppBaseCFA(_host, true, true, true) {
+        acceptedSuperToken = _acceptedSuperToken;
+    }
+
+    // constructor(ISuperToken _acceptedSuperToken) {}
 
     ///////////  MAIN FUNCTIONS  /////////////
     function distributeSubscriptions(
@@ -38,7 +40,7 @@ contract AtlasRouter {
         uint totalCreators = creators.length;
         for (uint256 i; i < totalCreators; ) {
             address creator = creators[i];
-            int96 flowRate = flowRates[i];
+            int96 flowRate = (shares[i] * totalInflowRate) / totalShares;
 
             require(creator != address(0), "INVALID ADDRESS");
 
@@ -78,37 +80,46 @@ contract AtlasRouter {
 
     ///////////  CALLBACK LOGIC  /////////////
 
-    // function onFlowCreated(
-    //     ISuperToken superToken,
-    //     address sender,
-    //     bytes calldata ctx
-    // ) internal override returns (bytes memory newCtx) {
-    //     newCtx = ctx;
+    function onFlowCreated(
+        ISuperToken superToken,
+        address sender,
+        bytes calldata ctx
+    ) internal override returns (bytes memory newCtx) {
+        newCtx = ctx;
 
-    //     // get inflow rate from sender
-    //     int96 inflowRate = superToken.getFlowRate(sender, address(this));
-    // }
+        // get inflow rate from sender
+        int96 inflowRate = superToken.getFlowRate(sender, address(this));
+        totalInflowRate += inflowRate;
+    }
 
-    // function onFlowUpdated(
-    //     ISuperToken superToken,
-    //     address sender,
-    //     int96 previousFlowRate,
-    //     uint256 /*lastUpdated*/,
-    //     bytes calldata ctx
-    // ) internal override returns (bytes memory newCtx) {
-    //     newCtx = ctx;
-    // }
+    function onFlowUpdated(
+        ISuperToken superToken,
+        address sender,
+        int96 previousFlowRate,
+        uint256 /*lastUpdated*/,
+        bytes calldata ctx
+    ) internal override returns (bytes memory newCtx) {
+        newCtx = ctx;
 
-    // function onFlowDeleted(
-    //     ISuperToken superToken,
-    //     address /*sender*/,
-    //     address receiver,
-    //     int96 previousFlowRate,
-    //     uint256 /*lastUpdated*/,
-    //     bytes calldata ctx
-    // ) internal override returns (bytes memory newCtx) {
-    //     newCtx = ctx;
-    // }
+        int96 inflowChange = superToken.getFlowRate(sender, address(this)) -
+            previousFlowRate;
+
+        totalInflowRate += inflowChange;
+    }
+
+    function onFlowDeleted(
+        ISuperToken superToken,
+        address sender,
+        address /*receiver*/,
+        int96 previousFlowRate,
+        uint256 /*lastUpdated*/,
+        bytes calldata ctx
+    ) internal override returns (bytes memory newCtx) {
+        newCtx = ctx;
+        // we just care about the flow to the Contract , which when deleted reduces to total inFlow
+
+        totalInflowRate -= previousFlowRate;
+    }
 
     /*///////////////////////////////////////////////////////////////
                            Superfluid
@@ -119,6 +130,7 @@ contract AtlasRouter {
         address user
     )
         public
+        view
         returns (
             uint256 timestamp,
             int96 flowRate,
@@ -131,7 +143,7 @@ contract AtlasRouter {
         ).getFlowInfo(user, address(this));
     }
 
-    function getNetStreamInfo() public returns (int96 flowRate) {
+    function getNetStreamInfo() public view returns (int96 flowRate) {
         (flowRate) = acceptedSuperToken.getNetFlowRate(address(this));
     }
 

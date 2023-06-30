@@ -34,7 +34,7 @@ const Explore = () => {
       <div className="flex mx-10 mt-10">
         <div className="w-full">
           <div className="grid grid-flow-rows grid-cols-4 gap-x-11 gap-y-10">
-            {/* {publications &&
+            {publications &&
               publications.map((publication) => {
                 return (
                   <ul className="border border-black">

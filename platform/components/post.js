@@ -159,22 +159,15 @@ export default function CreatePostModal({
       return { h: "eth-personal-sign", sig };
     });
 
-<<<<<<< HEAD
     await db
-      .collection("addVideos")
-      .record(data.id)
-      .call("setCreatorAbout", [postVideoUrl]);
-=======
-    await db.collection("CreatorProfile").record(profile.id)
-    .call("addVideos", [
-      postVideoUrl
-    ])
->>>>>>> 27a65dd2ab533581981e14ef9f1d7c74ca7203db
+      .collection("CreatorProfile")
+      .record(profile.id)
+      .call("addVideos", [postVideoUrl]);
   };
 
-  const route = ( ) => {
-    router.push("/explore")
-  }
+  const route = () => {
+    router.push("/explore");
+  };
 
   // Metadata Std : https://docs.lens.xyz/docs/metadata-standards#metadata-structure
   async function postWithHook() {
@@ -208,7 +201,6 @@ export default function CreatePostModal({
     await createCreatorVideoRecord();
     route();
   }
-
 
   return (
     <div className="w-5/6 flex justify-center mx-auto mt-6">

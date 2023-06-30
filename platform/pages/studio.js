@@ -31,18 +31,20 @@ const Post = () => {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [postVideoUrl, setPostVideoUrl] = useState();
+  const [livepeerLink, setLivepeerLink] = useState();
+  const [postVideoCover, setPostVideoCover] = useState();
   return (
     <div>
       <div className="w-screen">
         <div className="flex flex-col">
-          <div className="flex flex-row justify-between mt-6 mx-10 align-middle">
+          {/* <div className="flex flex-row justify-between mt-6 mx-10 align-middle">
             <div>
               <p className="text-xl text-green-500">hello</p>
             </div>
             <div>
               <p>hello</p>
             </div>
-          </div>
+          </div> */}
           <div className="mt-10 flex flex-col h-screen">
             <CreateAndViewAsset
               title={title}
@@ -51,12 +53,22 @@ const Post = () => {
               desc={desc}
               postVideoUrl={postVideoUrl}
               setPostVideoUrl={setPostVideoUrl}
+              livepeerLink={livepeerLink}
+              setLivepeerLink={setLivepeerLink}
+              postVideoCover={postVideoCover}
+              setPostVideoCover={setPostVideoCover}
             />
             <CreatePostModal
               title={title}
               setDesc={setDesc}
               setTitle={setTitle}
               desc={desc}
+              postVideoUrl={postVideoUrl}
+              setPostVideoUrl={setPostVideoUrl}
+              livepeerLink={livepeerLink}
+              setLivepeerLink={setLivepeerLink}
+              postVideoCover={postVideoCover}
+              setPostVideoCover={setPostVideoCover}
             />
           </div>
         </div>

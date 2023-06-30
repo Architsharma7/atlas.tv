@@ -6,12 +6,7 @@ import { LENS_HUB_CONTRACT_ADDRESS, LENS_ABI } from "../constants/lenshub";
 import { create } from "ipfs-http-client";
 import { v4 as uuid } from "uuid";
 import { useActiveProfile } from "@lens-protocol/react-web";
-
-const db = new Polybase({
-  defaultNamespace:
-    "pk/0xdd6503afa34792ca49abce644c46527bc2f664299797958e7780d21b4713a9698d35124fa269561f078f89c4aea969a862a20021f3f4042e1d5e5803817e28d3/atlas.tv",
-});
-
+import { db } from "./polybase";
 import {
   CollectPolicyType,
   ContentFocus,
@@ -147,7 +142,6 @@ export default function CreatePostModal({
     }
   }
 
-
   const createCreatorVideoRecord = async () => {
     db.signer(async (data) => {
       const accounts = await eth.requestAccounts();
@@ -158,10 +152,10 @@ export default function CreatePostModal({
       return { h: "eth-personal-sign", sig };
     });
 
-    await db.collection("addVideos").record(data.id)
-    .call("setCreatorAbout", [
-      postVideoUrl
-    ])
+    await db
+      .collection("addVideos")
+      .record(data.id)
+      .call("setCreatorAbout", [postVideoUrl]);
   };
 
   // Metadata Std : https://docs.lens.xyz/docs/metadata-standards#metadata-structure

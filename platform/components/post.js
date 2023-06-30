@@ -6,7 +6,14 @@ import { LENS_HUB_CONTRACT_ADDRESS, LENS_ABI } from "../constants/lenshub";
 import { create } from "ipfs-http-client";
 import { v4 as uuid } from "uuid";
 import { useActiveProfile } from "@lens-protocol/react-web";
-import { db } from "./polybase";
+import { Polybase } from "@polybase/client";
+import * as eth from "@polybase/eth";
+
+const db = new Polybase({
+  defaultNamespace:
+    "pk/0xdd6503afa34792ca49abce644c46527bc2f664299797958e7780d21b4713a9698d35124fa269561f078f89c4aea969a862a20021f3f4042e1d5e5803817e28d3/atlas.tv",
+});
+
 import {
   CollectPolicyType,
   ContentFocus,
@@ -143,20 +150,31 @@ export default function CreatePostModal({
   }
 
   const createCreatorVideoRecord = async () => {
-    db.signer(async (data) => {
+    db.signer(async (profile) => {
       const accounts = await eth.requestAccounts();
       const account = accounts[0];
 
-      const sig = await eth.sign(data, account);
+      const sig = await eth.sign(profile, account);
 
       return { h: "eth-personal-sign", sig };
     });
 
+<<<<<<< HEAD
     await db
       .collection("addVideos")
       .record(data.id)
       .call("setCreatorAbout", [postVideoUrl]);
+=======
+    await db.collection("CreatorProfile").record(profile.id)
+    .call("addVideos", [
+      postVideoUrl
+    ])
+>>>>>>> 27a65dd2ab533581981e14ef9f1d7c74ca7203db
   };
+
+  const route = ( ) => {
+    router.push("/explore")
+  }
 
   // Metadata Std : https://docs.lens.xyz/docs/metadata-standards#metadata-structure
   async function postWithHook() {
@@ -173,7 +191,7 @@ export default function CreatePostModal({
         {
           mimeType: "video/mp4",
           url: postVideoUrl,
-          altTag: "Atlas Video",
+          altTag: livepeerLink,
           cover: postVideoCover,
         },
       ],
@@ -188,8 +206,9 @@ export default function CreatePostModal({
     });
 
     await createCreatorVideoRecord();
-    await router.push("/explore");
+    route();
   }
+
 
   return (
     <div className="w-5/6 flex justify-center mx-auto mt-6">

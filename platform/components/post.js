@@ -7,12 +7,18 @@ import { create } from "ipfs-http-client";
 import { v4 as uuid } from "uuid";
 import { useActiveProfile } from "@lens-protocol/react-web";
 
+const db = new Polybase({
+  defaultNamespace:
+    "pk/0xdd6503afa34792ca49abce644c46527bc2f664299797958e7780d21b4713a9698d35124fa269561f078f89c4aea969a862a20021f3f4042e1d5e5803817e28d3/atlas.tv",
+});
+
 import {
   CollectPolicyType,
   ContentFocus,
   ReferencePolicyType,
   useCreatePost,
 } from "@lens-protocol/react-web";
+import { useRouter } from "next/router";
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 const projectSecret = process.env.NEXT_PUBLIC_PROJECT_SECRET;
@@ -42,6 +48,8 @@ export default function CreatePostModal({
   // const videoUrl =
   //   "ipfs://bafybeihqsfoh7eq3mgp64riz3v2iv2ksp65kxbadb343st4klj5glnt3pe";
   const { data: profile } = useActiveProfile();
+
+  const router = useRouter();
 
   const {
     execute: createPost,
@@ -139,6 +147,23 @@ export default function CreatePostModal({
     }
   }
 
+
+  const createCreatorVideoRecord = async () => {
+    db.signer(async (data) => {
+      const accounts = await eth.requestAccounts();
+      const account = accounts[0];
+
+      const sig = await eth.sign(data, account);
+
+      return { h: "eth-personal-sign", sig };
+    });
+
+    await db.collection("addVideos").record(data.id)
+    .call("setCreatorAbout", [
+      postVideoUrl
+    ])
+  };
+
   // Metadata Std : https://docs.lens.xyz/docs/metadata-standards#metadata-structure
   async function postWithHook() {
     // {
@@ -167,6 +192,9 @@ export default function CreatePostModal({
         type: ReferencePolicyType.ANYONE,
       },
     });
+
+    await createCreatorVideoRecord();
+    await router.push("/explore");
   }
 
   return (

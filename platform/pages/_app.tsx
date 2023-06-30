@@ -8,14 +8,16 @@ import { LivepeerConfig } from "@livepeer/react";
 import { livepeerClient } from "../components/livepeer";
 import "@rainbow-me/rainbowkit/styles.css";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
-
+import { AuthProvider } from "../auth/authContext";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <LivepeerConfig client={livepeerClient}>
       <WagmiConfig client={wagmiClient}>
         <RainbowKitProvider chains={chains}>
           <LensProvider config={lensConfig}>
+            {/* <AuthProvider> */}
             <Component {...pageProps} />
+            {/* </AuthProvider> */}
           </LensProvider>
         </RainbowKitProvider>
       </WagmiConfig>
